@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Body Outline Scanner — Real-Time AI Body Detection</title>
+  <meta name="description" content="Real-Time Body Outline Scanner using AI Computer Vision and your webcam. 5 stunning visual styles, skeleton tracking, and live glow effects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── CURSOR GLOW ───────────────────────────────────────────────── -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ── BACKGROUND GRID ──────────────────────────────────────────── -->
+  <div class="bg-grid"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  NAV                                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span>BOS<span class="logo-accent">AI</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#styles">Styles</a></li>
+        <li><a href="#controls">Controls</a></li>
+      </ul>
+      <a href="scanner.html" class="btn btn-sm btn-glow">Launch Scanner →</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  HERO                                                          -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-scan-line"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered · Real-Time · Webcam Only
+      </div>
+
+      <h1 class="hero-title">
+        <span class="title-line">Body</span>
+        <span class="title-line glow-text">Outline</span>
+        <span class="title-line">Scanner</span>
+      </h1>
+
+      <p class="hero-sub">
+        Detect your full body in real-time through your laptop webcam.
+        Draw stunning neon outlines, skeleton overlays, or thermal heat maps —
+        all powered by AI with zero lag.
+      </p>
+
+      <div class="hero-actions">
+        <a href="scanner.html" class="btn btn-primary btn-glow" id="heroLaunchScanner" style="font-size:1rem;padding:14px 32px;">
+          <span>⚡ Launch Scanner</span>
+        </a>
+        <a href="#styles" class="btn btn-outline">
+          <span>View Styles →</span>
+        </a>
+      </div>
+      <div style="margin-top:-32px;margin-bottom:8px;font-size:0.75rem;color:#7a8fa6;">
+        🌐 Runs entirely in your browser · No install needed · Webcam access required
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-val" data-target="30">0</span><span class="stat-unit">fps</span>
+          <span class="stat-label">Target Speed</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-val" data-target="33">0</span><span class="stat-unit">pts</span>
+          <span class="stat-label">Body Keypoints</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-val" data-target="5">0</span><span class="stat-unit"></span>
+          <span class="stat-label">Visual Styles</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-val" data-target="8">0</span><span class="stat-unit"></span>
+          <span class="stat-label">Colour Options</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated scanner frame -->
+    <div class="hero-scanner">
+      <div class="scanner-frame">
+        <div class="scanner-corner tl"></div>
+        <div class="scanner-corner tr"></div>
+        <div class="scanner-corner bl"></div>
+        <div class="scanner-corner br"></div>
+        <div class="scanner-beam"></div>
+        <div class="scanner-figure">
+          <svg viewBox="0 0 200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Body silhouette -->
+            <ellipse cx="100" cy="45" rx="28" ry="32" class="svg-body"/>
+            <!-- Torso -->
+            <path d="M68 90 Q65 140 70 190 L130 190 Q135 140 132 90 Z" class="svg-body"/>
+            <!-- Left arm -->
+            <path d="M70 95 Q40 130 35 175 Q38 180 45 178 Q55 140 75 110" class="svg-body"/>
+            <!-- Right arm -->
+            <path d="M130 95 Q160 130 165 175 Q162 180 155 178 Q145 140 125 110" class="svg-body"/>
+            <!-- Left leg -->
+            <path d="M80 188 Q75 240 72 300 Q76 305 85 303 Q90 250 95 195" class="svg-body"/>
+            <!-- Right leg -->
+            <path d="M120 188 Q125 240 128 300 Q124 305 115 303 Q110 250 105 195" class="svg-body"/>
+
+            <!-- Skeleton lines -->
+            <line x1="100" y1="13" x2="100" y2="78" class="svg-skel"/>
+            <line x1="70" y1="95" x2="130" y2="95" class="svg-skel"/>
+            <line x1="70" y1="95" x2="45" y2="178" class="svg-skel"/>
+            <line x1="130" y1="95" x2="155" y2="178" class="svg-skel"/>
+            <line x1="70" y1="185" x2="130" y2="185" class="svg-skel"/>
+            <line x1="70" y1="185" x2="72" y2="303" class="svg-skel"/>
+            <line x1="130" y1="185" x2="128" y2="303" class="svg-skel"/>
+
+            <!-- Keypoint dots -->
+            <circle cx="100" cy="13" r="4" class="svg-dot"/>
+            <circle cx="100" cy="78" r="5" class="svg-dot"/>
+            <circle cx="70" cy="95" r="4" class="svg-dot"/>
+            <circle cx="130" cy="95" r="4" class="svg-dot"/>
+            <circle cx="45" cy="178" r="4" class="svg-dot"/>
+            <circle cx="155" cy="178" r="4" class="svg-dot"/>
+            <circle cx="70" cy="185" r="4" class="svg-dot"/>
+            <circle cx="130" cy="185" r="4" class="svg-dot"/>
+            <circle cx="72" cy="303" r="4" class="svg-dot"/>
+            <circle cx="128" cy="303" r="4" class="svg-dot"/>
+          </svg>
+        </div>
+        <!-- HUD labels -->
+        <div class="hud-label hud-tl">FPS: 30</div>
+        <div class="hud-label hud-tr detected">✔ DETECTED</div>
+        <div class="hud-label hud-bl">Style: Neon Glow</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  HOW IT WORKS                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Pipeline</span>
+        <h2>How It Works</h2>
+        <p>Four clean stages from camera input to glowing output</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-num">01</div>
+          <div class="step-icon">📷</div>
+          <h3>Camera Input</h3>
+          <p>Captures live 720p frames at 30 fps from your built-in or USB webcam. Frames are mirrored for a natural selfie view.</p>
+        </div>
+        <div class="step-arrow reveal">→</div>
+        <div class="step-card reveal">
+          <div class="step-num">02</div>
+          <div class="step-icon">🧠</div>
+          <h3>AI Detection</h3>
+          <p>MediaPipe Selfie Segmentation separates body pixels from background at 70%+ confidence. Temporal smoothing across 3 frames prevents flicker.</p>
+        </div>
+        <div class="step-arrow reveal">→</div>
+        <div class="step-card reveal">
+          <div class="step-num">03</div>
+          <div class="step-icon">✏️</div>
+          <h3>Outline Generation</h3>
+          <p>Contour extraction and Canny edge detection create smooth body edges. Glow is layered with multi-pass Gaussian blur.</p>
+        </div>
+        <div class="step-arrow reveal">→</div>
+        <div class="step-card reveal">
+          <div class="step-num">04</div>
+          <div class="step-icon">🖥️</div>
+          <h3>Live Display</h3>
+          <p>The styled outline is composited onto the live frame with FPS counter, detection badge, and style bar — all in real-time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  STYLES                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="section section-dark" id="styles">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Visual Modes</span>
+        <h2>5 Outline Styles</h2>
+        <p>Switch between styles instantly with the <kbd>S</kbd> key</p>
+      </div>
+
+      <div class="styles-grid">
+
+        <div class="style-card active reveal" data-style="0" id="styleCard0">
+          <div class="style-preview" style="--glow-color: #00FF41;">
+            <div class="preview-body neon"></div>
+            <div class="preview-label">Active</div>
+          </div>
+          <div class="style-info">
+            <span class="style-num">01</span>
+            <h3>Neon Glow</h3>
+            <p>Bright neon edge with layered Gaussian blur creating a futuristic sci-fi scanner glow effect.</p>
+            <div class="style-tags">
+              <span class="tag">Canny Edge</span>
+              <span class="tag">Glow Blur</span>
+              <span class="tag">Sci-Fi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="style-card reveal" data-style="1" id="styleCard1">
+          <div class="style-preview" style="--glow-color: #00F5FF;">
+            <div class="preview-body wireframe"></div>
+          </div>
+          <div class="style-info">
+            <span class="style-num">02</span>
+            <h3>Wireframe Scan</h3>
+            <p>Thin, clean contour line only — no fill. Professional security scanner aesthetic.</p>
+            <div class="style-tags">
+              <span class="tag">Clean Edge</span>
+              <span class="tag">No Fill</span>
+              <span class="tag">Security</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="style-card reveal" data-style="2" id="styleCard2">
+          <div class="style-preview" style="--glow-color: #FFD700;">
+            <div class="preview-body heatmap"></div>
+          </div>
+          <div class="style-info">
+            <span class="style-num">03</span>
+            <h3>Heat Map Body</h3>
+            <p>Thermal gradient fill from red (head) to blue (feet) with a bright yellow outline border.</p>
+            <div class="style-tags">
+              <span class="tag">Gradient Fill</span>
+              <span class="tag">Thermal</span>
+              <span class="tag">Medical</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="style-card reveal" data-style="3" id="styleCard3">
+          <div class="style-preview" style="--glow-color: #BF00FF;">
+            <div class="preview-body silhouette"></div>
+          </div>
+          <div class="style-info">
+            <span class="style-num">04</span>
+            <h3>Solid Silhouette</h3>
+            <p>Semi-transparent 45% opacity fill with a bold border. Clean and minimal look.</p>
+            <div class="style-tags">
+              <span class="tag">Semi-Trans</span>
+              <span class="tag">Bold Border</span>
+              <span class="tag">Minimal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="style-card reveal" data-style="4" id="styleCard4">
+          <div class="style-preview" style="--glow-color: #00FF41;">
+            <div class="preview-body skeleton"></div>
+          </div>
+          <div class="style-info">
+            <span class="style-num">05</span>
+            <h3>Skeleton Overlay</h3>
+            <p>Full body outline plus all 33 MediaPipe pose keypoints drawn as animated joint lines.</p>
+            <div class="style-tags">
+              <span class="tag">33 Keypoints</span>
+              <span class="tag">Pose Lines</span>
+              <span class="tag">Fitness</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  COLOURS                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="colours">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Palette</span>
+        <h2>8 Outline Colours</h2>
+        <p>Cycle through with the <kbd>C</kbd> key at any time</p>
+      </div>
+      <div class="colors-row reveal">
+        <div class="color-chip" style="--c:#00FF41;" title="Neon Green">
+          <div class="chip-dot"></div>
+          <span>Neon Green</span>
+        </div>
+        <div class="color-chip" style="--c:#00F5FF;" title="Cyber Blue">
+          <div class="chip-dot"></div>
+          <span>Cyber Blue</span>
+        </div>
+        <div class="color-chip" style="--c:#FF007F;" title="Hot Pink">
+          <div class="chip-dot"></div>
+          <span>Hot Pink</span>
+        </div>
+        <div class="color-chip" style="--c:#FF6600;" title="Solar Orange">
+          <div class="chip-dot"></div>
+          <span>Solar Orange</span>
+        </div>
+        <div class="color-chip" style="--c:#FFFFFF;" title="Pure White">
+          <div class="chip-dot"></div>
+          <span>Pure White</span>
+        </div>
+        <div class="color-chip" style="--c:#FFD700;" title="Gold">
+          <div class="chip-dot"></div>
+          <span>Gold</span>
+        </div>
+        <div class="color-chip" style="--c:#FF0000;" title="Red Alert">
+          <div class="chip-dot"></div>
+          <span>Red Alert</span>
+        </div>
+        <div class="color-chip" style="--c:#BF00FF;" title="Purple Void">
+          <div class="chip-dot"></div>
+          <span>Purple Void</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  CONTROLS                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="section section-dark" id="controls">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Controls</span>
+        <h2>Keyboard Shortcuts</h2>
+        <p>Full control without ever touching the mouse</p>
+      </div>
+      <div class="controls-grid reveal">
+        <div class="key-item"><kbd>S</kbd><span>Switch outline style</span></div>
+        <div class="key-item"><kbd>C</kbd><span>Change outline colour</span></div>
+        <div class="key-item"><kbd>B</kbd><span>Cycle background mode</span></div>
+        <div class="key-item"><kbd>+</kbd><span>Increase thickness</span></div>
+        <div class="key-item"><kbd>−</kbd><span>Decrease thickness</span></div>
+        <div class="key-item"><kbd>G</kbd><span>Toggle glow on/off</span></div>
+        <div class="key-item"><kbd>F</kbd><span>Toggle fullscreen</span></div>
+        <div class="key-item"><kbd>R</kbd><span>Start / stop recording</span></div>
+        <div class="key-item"><kbd>Q</kbd><span>Quit scanner</span></div>
+      </div>
+
+      <div class="bg-modes-row reveal">
+        <h3>Background Modes</h3>
+        <div class="bg-modes">
+          <div class="bg-mode"><span class="bg-icon">🎥</span>Original</div>
+          <div class="bg-mode"><span class="bg-icon">⬛</span>Black</div>
+          <div class="bg-mode"><span class="bg-icon">🌫️</span>Blur</div>
+          <div class="bg-mode"><span class="bg-icon">🟫</span>Solid Colour</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!--  FOOTER                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">⬡</span>
+          <span>BOS<span class="logo-accent">AI</span></span>
+        </div>
+        <p class="footer-copy">Real-Time Body Outline Scanner · Built with AI Computing &amp; MediaPipe</p>
+        <div class="footer-stack">
+          <span class="stack-chip">HTML5 / Canvas</span>
+          <span class="stack-chip">JavaScript</span>
+          <span class="stack-chip">MediaPipe JS</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
